@@ -68,6 +68,12 @@ private class BuildSmbclient: BaseBuild {
         "buildtools/bin/waf"
     }
 
+    override func cFlags(platform: PlatformType, arch: ArchType) -> [String] {
+        var cFlags = super.cFlags(platform: platform, arch: arch)
+        cFlags.append("-Wno-error=implicit-function-declaration")
+        return cFlags
+    }
+
     override func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
         var env = super.environment(platform: platform, arch: arch)
         let executableArchitecture = arch.executableArchitecture ?? "x86_64"
