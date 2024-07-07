@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        brew install autoconf
+        brew install automake
+        brew install libtool
+        brew install texinfo
+        brew install heimdal
+        python -m pip install setuptools
+        which python
+    - name: check python
+      run: which python
+    - name: check path
+      run: echo $PATH
+    - name: check asn1_compile
+      run: which asn1_compile
+    - name: check compile_et
+      run: which compile_et
