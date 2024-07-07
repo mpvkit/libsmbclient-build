@@ -204,11 +204,7 @@ class BaseBuild {
         for library in librarys {
             let path = URL.currentDirectory + [library.rawValue, platform.rawValue, "thin", arch.rawValue]
             if FileManager.default.fileExists(atPath: path.path) {
-                // if library == .libsmbclient {
-                //     cFlags.append("-I\(path.path)/include/samba-4.0")
-                // } else {
-                    cFlags.append("-I\(path.path)/include")
-                // }
+                cFlags.append("-I\(path.path)/include")
             }
         }
         return cFlags
@@ -226,13 +222,6 @@ class BaseBuild {
                 }
                 ldFlags.append("-L\(path.path)/lib")
                 ldFlags.append("-l\(libname)")
-                // if library == .nettle {
-                //     ldFlags.append("-lhogweed")
-                // } else if library == .gnutls {
-                //     ldFlags.append(contentsOf: ["-framework", "Security", "-framework", "CoreFoundation"])
-                // } else if library == .libsmbclient {
-                //     ldFlags.append(contentsOf: ["-lresolv", "-lpthread", "-lz", "-liconv"])
-                // }
             }
         }
         return ldFlags
@@ -702,6 +691,19 @@ enum ArchType: String, CaseIterable {
             return true
         }
         return false
+    }
+
+    var executableArchitecture: String? {
+        guard let arch = Bundle.main.executableArchitectures?.first?.intValue else {
+            return nil
+        }
+        // NSBundleExecutableArchitectureARM64
+        if arch == 0x0100_000C {
+            return "arm64"
+        } else if arch == NSBundleExecutableArchitectureX86_64 {
+            return "x86_64"
+        }
+        return nil
     }
 
     var cpuFamily: String {

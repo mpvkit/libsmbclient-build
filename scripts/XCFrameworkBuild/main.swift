@@ -49,8 +49,6 @@ enum Library: String, CaseIterable {
 
 
 private class BuildSmbclient: BaseBuild {
-    let heimdalUrl = "https://github.com/heimdal/heimdal.git"
-    let heimdalVersion = "heimdal-7.8.0"
 
     init() {
         // // if use brew version python, you will need to install python-setuptools for distutils dependency error
@@ -63,32 +61,6 @@ private class BuildSmbclient: BaseBuild {
             Utility.shell("python -m pip install setuptools")
         }
 
-        // To cross compile samba, need to build asn1_compile and compile_et first 
-        if Utility.shell("which asn1_compile") == nil || Utility.shell("which compile_et") == nil {
-            if Utility.shell("which makeinfo") == nil {
-                Utility.shell("brew install texinfo")
-            }
-
-            let heimdalDirectoryURL = URL.currentDirectory + "\(heimdalVersion)"
-            if !FileManager.default.fileExists(atPath: heimdalDirectoryURL.path) {
-                try! Utility.launch(path: "/usr/bin/git", arguments: ["-c", "advice.detachedHead=false", "clone", "--depth", "1", "--branch", heimdalVersion, heimdalUrl, heimdalDirectoryURL.path])
-            }
-            let heimdalPrefix = heimdalDirectoryURL + "buildtools"
-            let asn1URL = heimdalPrefix + "libexec/heimdal/asn1_compile"
-            if !FileManager.default.fileExists(atPath: asn1URL.path) {
-                let autogen = heimdalDirectoryURL + "autogen.sh"
-                try! Utility.launch(executableURL: autogen, arguments: [], currentDirectoryURL: heimdalDirectoryURL)
-                let configure = heimdalDirectoryURL + "configure"
-                let arguments = [
-                    "--prefix=\(heimdalPrefix.path)",
-                ]
-                try! Utility.launch(executableURL: configure, arguments: arguments, currentDirectoryURL: heimdalDirectoryURL)
-                try! Utility.launch(path: "/usr/bin/make", arguments: ["-j8"], currentDirectoryURL: heimdalDirectoryURL)
-                try! Utility.launch(path: "/usr/bin/make", arguments: ["-j8", "install"], currentDirectoryURL: heimdalDirectoryURL)
-            }
-        }
-
-
         super.init(library: .libsmbclient)
     }
 
@@ -96,16 +68,11 @@ private class BuildSmbclient: BaseBuild {
         "buildtools/bin/waf"
     }
 
-    override func cFlags(platform: PlatformType, arch: ArchType) -> [String] {
-        var cFlags = super.cFlags(platform: platform, arch: arch)
-        cFlags.append("-Wno-error=implicit-function-declaration")
-        return cFlags
-    }
-
     override func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
         var env = super.environment(platform: platform, arch: arch)
-        let heimdalDirectoryURL = URL.currentDirectory + "\(heimdalVersion)"
-        env["PATH"] = (heimdalDirectoryURL + "buildtools/libexec/heimdal").path + ":" + (heimdalDirectoryURL + "lib/com_err").path + ":" + (directoryURL + "buildtools/bin").path + ":" + (env["PATH"] ?? "")
+        let executableArchitecture = arch.executableArchitecture ?? "x86_64"
+        let asn1DirectoryURL = URL.currentDirectory + ["../bin", executableArchitecture]
+        env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":/Library/Frameworks/Python.framework/Versions/Current/bin:" + (env["PATH"] ?? "")
         env["PYTHONHASHSEED"] = "1"
         env["WAF_MAKE"] = "1"
         return env
@@ -278,6 +245,12 @@ private class BuildGnutls: BaseBuild {
 
     override func flagsDependencelibrarys() -> [Library] {
         [.gmp, .nettle]
+    }
+
+    override func ldFlags(platform: PlatformType, arch: ArchType) -> [String] {
+        var ldFlags = super.ldFlags(platform: platform, arch: arch)
+        ldFlags.append("-lhogweed")
+        return ldFlags
     }
 
     override func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
