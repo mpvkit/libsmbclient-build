@@ -1,0 +1,79 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        default: '0.0.0'
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        brew install autoconf
+        brew install automake
+        brew install libtool
+        brew install texinfo
+        python -m pip install setuptools
+
+    - name: Build
+      run: |
+        swift run --package-path scripts
+        
+    - name: Update Package.swift
+      run: |
+        rm -f ./Package.swift
+        cp -f ./docs/Package.template.swift ./Package.swift
+        gmp_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/gmp.xcframework.zip"
+        gmp_checksum=$(cat ./dist/release/gmp.xcframework.checksum.txt)
+        sed -i '' "s#\\\(gmp_url)#${gmp_url}#g" ./Package.swift
+        sed -i '' "s#\\\(gmp_checksum)#${gmp_checksum}#g" ./Package.swift
+
+        nettle_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/nettle.xcframework.zip"
+        nettle_checksum=$(cat ./dist/release/nettle.xcframework.checksum.txt)
+        sed -i '' "s#\\\(nettle_url)#${nettle_url}#g" ./Package.swift
+        sed -i '' "s#\\\(nettle_checksum)#${nettle_checksum}#g" ./Package.swift
+
+        hogweed_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/hogweed.xcframework.zip"
+        hogweed_checksum=$(cat ./dist/release/hogweed.xcframework.checksum.txt)
+        sed -i '' "s#\\\(hogweed_url)#${hogweed_url}#g" ./Package.swift
+        sed -i '' "s#\\\(hogweed_checksum)#${hogweed_checksum}#g" ./Package.swift
+
+        gnutls_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/gnutls.xcframework.zip"
+        gnutls_checksum=$(cat ./dist/release/gnutls.xcframework.checksum.txt)
+        sed -i '' "s#\\\(gnutls_url)#${gnutls_url}#g" ./Package.swift
+        sed -i '' "s#\\\(gnutls_checksum)#${gnutls_checksum}#g" ./Package.swift
+
+        Libsmbclient_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient.xcframework.zip"
+        Libsmbclient_checksum=$(cat ./dist/release/Libsmbclient.xcframework.checksum.txt)
+        sed -i '' "s#\\\(Libsmbclient_url)#${Libsmbclient_url}#g" ./Package.swift
+        sed -i '' "s#\\\(Libsmbclient_checksum)#${Libsmbclient_checksum}#g" ./Package.swift
+
+    - name: Push Package.swift
+      uses: EndBug/add-and-commit@v9
+      with:
+        default_author: github_actions
+        add: |
+          - Package.swift
+          - Sources
+        message: "chore: release version ${{ github.event.inputs.version }}"
+        push: "origin HEAD:${{ github.ref_name }}"
+        
+    - name: Upload binary to GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: ${{ github.event.inputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
+        files: |
+          ./dist/release/*.txt
+          ./dist/release/*.zip
+        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
+        fail_on_unmatched_files: true
