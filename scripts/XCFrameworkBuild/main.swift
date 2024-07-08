@@ -1,13 +1,18 @@
 import Foundation
 
 do {
-    try Build.performCommand(arguments: Array(CommandLine.arguments.dropFirst()))
+    let arguments = Array(CommandLine.arguments.dropFirst())
+    try Build.performCommand(arguments: arguments)
 
-    try BuildReadline().buildALL()
-    try BuildGmp().buildALL()
-    try BuildNettle().buildALL()
-    try BuildGnutls().buildALL()
-    try BuildSmbclient().buildALL()
+    if arguments.firstIndex(of: "enable-gnutls") != nil {
+        try BuildReadline().buildALL()
+        try BuildGmp().buildALL()
+        try BuildNettle().buildALL()
+        try BuildGnutls().buildALL()
+    }
+    if arguments.firstIndex(of: "enable-libsmbclient") != nil {
+        try BuildSmbclient().buildALL()
+    }
 } catch {
     print(error.localizedDescription)
     exit(0)

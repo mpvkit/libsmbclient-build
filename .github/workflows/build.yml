@@ -24,9 +24,19 @@ jobs:
         brew install texinfo
         python -m pip install setuptools
 
+    - name: Cache Primes
+      id: cache-primes
+      uses: actions/cache/restore@v4
+      with:
+        path: ./dist
+        key: gnutls-primes
+
+    - name: list files
+      run: ls -al ./dist
+
     - name: Build
       run: |
-        swift run --package-path scripts
+        swift run --package-path scripts build enable-libsmbclient
         
     - name: Update Package.swift
       run: |
