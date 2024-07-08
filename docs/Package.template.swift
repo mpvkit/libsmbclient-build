@@ -8,19 +8,13 @@ let package = Package(
         .library(
             name: "libsmbclient",
             type: .static,
-            targets: ["smbclient"]
+            targets: ["Libsmbclient"]
         ),
     ],
     dependencies: [
         .package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
     ],
     targets: [
-        .target(
-            name: "smbclient",
-            dependencies: [
-                "Libsmbclient"
-            ]
-        ),
         .binaryTarget(
             name: "Libsmbclient",
             url: "\(Libsmbclient_url)",

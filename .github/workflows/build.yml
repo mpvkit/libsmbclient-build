@@ -27,7 +27,7 @@ jobs:
 
     - name: Build
       run: |
-        swift run --package-path scripts build enable-libsmbclient
+        swift run --package-path script
 
     - name: list files
       run: ls -al ./dist
