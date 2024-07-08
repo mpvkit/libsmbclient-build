@@ -3,30 +3,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "openssl",
+    name: "libsmbclient",
     products: [
         .library(
-            name: "openssl",
+            name: "libsmbclient",
             type: .static,
-            targets: ["openssl"]
+            targets: ["smbclient"]
         ),
     ],
     targets: [
         .target(
-            name: "openssl",
+            name: "smbclient",
             dependencies: [
-                "Libssl", "Libcrypto"
+                "Libsmbclient",
+                .Package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
             ]
         ),
         .binaryTarget(
-            name: "Libssl",
-            url: "https://github.com/mpvkit/openssl-build/releases/download/3.2.0/Libssl.xcframework.zip",
-            checksum: "ee47164af7db6d1e03bcdd63793dbbd839d910dcaa88f30c77dc689eb9a8c938"
-        ),
-        .binaryTarget(
-            name: "Libcrypto",
-            url: "https://github.com/mpvkit/openssl-build/releases/download/3.2.0/Libcrypto.xcframework.zip",
-            checksum: "a1a1b853e167721137b4d4551af1abaece462c1cfcc7732b904afcea602c913c"
+            name: "Libsmbclient",
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/0.0.0/Libsmbclient.xcframework.zip",
+            checksum: "c4d9b7a7c0a8a2d13d3700100d14a9dee97f8113b81e69f8ae2be05a46735ed6"
         )
     ]
 )
