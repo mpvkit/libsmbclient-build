@@ -18,6 +18,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        cpan Parse::Yapp
         brew install autoconf
         brew install automake
         brew install libtool
@@ -30,6 +31,7 @@ jobs:
       with:
         path: ./dist
         key: gnutls-primes
+        fail-on-cache-miss: true
 
     - name: list files
       run: ls -al ./dist
