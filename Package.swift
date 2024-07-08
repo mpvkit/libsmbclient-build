@@ -23,8 +23,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "Libsmbclient",
-            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/0.0.0/Libsmbclient.xcframework.zip",
-            checksum: "c4d9b7a7c0a8a2d13d3700100d14a9dee97f8113b81e69f8ae2be05a46735ed6"
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient.xcframework.zip",
+            checksum: "699800a22d7b457a8baf8d334ddf2623fda983d9084e6c26a57fea1be24c7168"
         )
     ]
 )
