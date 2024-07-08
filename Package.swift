@@ -11,12 +11,14 @@ let package = Package(
             targets: ["smbclient"]
         ),
     ],
+    dependencies: [
+        .Package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
+    ],
     targets: [
         .target(
             name: "smbclient",
             dependencies: [
-                "Libsmbclient",
-                .Package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
+                "Libsmbclient"
             ]
         ),
         .binaryTarget(
