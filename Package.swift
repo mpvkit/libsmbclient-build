@@ -12,7 +12,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .Package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
+        .package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
     ],
     targets: [
         .target(
