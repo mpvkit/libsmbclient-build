@@ -12,6 +12,9 @@ enum Build {
         if Utility.shell("which pkg-config") == nil {
             Utility.shell("brew install pkg-config")
         }
+        if Utility.shell("which wget") == nil {
+            Utility.shell("brew install wget")
+        }
         let path = URL.currentDirectory + "dist"
         if !FileManager.default.fileExists(atPath: path.path) {
             try? FileManager.default.createDirectory(at: path, withIntermediateDirectories: false, attributes: nil)
@@ -42,8 +45,16 @@ class BaseBuild {
         self.library = library
         directoryURL = URL.currentDirectory + "\(library.rawValue)-\(library.version)"
 
-        
-        if !FileManager.default.fileExists(atPath: directoryURL.path) {
+        // unzip builded static library
+        if library.url.hasSuffix(".zip") {
+            try? FileManager.default.removeItem(atPath: directoryURL.path)
+            try! FileManager.default.createDirectory(atPath: directoryURL.path, withIntermediateDirectories: true, attributes: nil)
+
+            let outputFileName = "\(library.rawValue).zip"
+            try! Utility.launch(executableName: "wget", arguments: ["-O", outputFileName, library.url], currentDirectoryURL: directoryURL)
+            try! Utility.launch(path: "/usr/bin/unzip", arguments: [outputFileName], currentDirectoryURL: directoryURL)
+            try? FileManager.default.removeItem(at: directoryURL + [outputFileName])
+        } else if !FileManager.default.fileExists(atPath: directoryURL.path) {
             // pull code
             try! Utility.launch(path: "/usr/bin/git", arguments: ["-c", "advice.detachedHead=false", "clone", "--depth", "1", "--branch", library.version, library.url, directoryURL.path])
 
@@ -449,20 +460,27 @@ class BaseBuild {
         // copy includes
         let includePath = thinDir(platform: PlatformType.ios, arch: ArchType.arm64) + ["include"]
         let destIncludePath = releaseDirPath + [library.rawValue, "include"]
-        Utility.shell("cp -rf \(includePath.path) \(destIncludePath.path)")
+        try FileManager.default.copyItem(at: includePath, to: destIncludePath)
 
 
         // copy pkg-config files
         let iosLibPath = thinDir(platform: PlatformType.ios, arch: ArchType.arm64) + ["lib"]
         let pkgconfigPath = iosLibPath + ["pkgconfig"]
         let destPkgConfigPath = releaseDirPath + [library.rawValue, "pkgconfig-example"]
-        Utility.shell("cp -rf \(pkgconfigPath.path) \(destPkgConfigPath.path)")
+        try FileManager.default.copyItem(at: pkgconfigPath, to: destPkgConfigPath)
+        let pkgconfigFiles = Utility.listAllFiles(in: destPkgConfigPath)
+        for file in pkgconfigFiles {
+            if let data = FileManager.default.contents(atPath: file.path), var str = String(data: data, encoding: .utf8) {
+                str = str.replacingOccurrences(of: URL.currentDirectory.path, with: "/path/to/dist")
+                try! str.write(toFile: file.path, atomically: true, encoding: .utf8)
+            }
+        }
 
         // zip build artifacts
-        let sourceLib = library.rawValue
+        let sourceLib = releaseDirPath + [library.rawValue]
         let destZipLibPath = releaseDirPath + [library.rawValue + "-all.zip"]
         try? FileManager.default.removeItem(at: destZipLibPath)
-        Utility.shell("zip -qr \(destZipLibPath.path) \(sourceLib)", currentDirectoryURL: releaseDirPath)
+        try Utility.launch(path: "/usr/bin/zip", arguments: ["-qr", destZipLibPath.path, "./"], currentDirectoryURL: sourceLib)
 
         // zip xcframeworks
         var frameworks: [String] = []
@@ -480,12 +498,49 @@ class BaseBuild {
             let checksumFile = releaseDirPath + [framework + ".xcframework.checksum.txt"]
             try? FileManager.default.removeItem(at: zipFile)
             try? FileManager.default.removeItem(at: checksumFile)
-            Utility.shell("zip -qr \(zipFile.path) \(XCFrameworkFile)", currentDirectoryURL: URL.currentDirectory + ["../Sources"])
+            try Utility.launch(path: "/usr/bin/zip", arguments: ["-qr", zipFile.path, XCFrameworkFile], currentDirectoryURL: URL.currentDirectory + ["../Sources"])
             Utility.shell("swift package compute-checksum \(zipFile.path) > \(checksumFile.path)")
         }
     }
 }
 
+
+class ZipBaseBuild : BaseBuild {
+
+    override func buildALL() throws {
+        try? FileManager.default.removeItem(at: URL.currentDirectory + library.rawValue)
+        try? FileManager.default.removeItem(at: directoryURL.appendingPathExtension("log"))
+        try? FileManager.default.createDirectory(atPath: (URL.currentDirectory + library.rawValue).path, withIntermediateDirectories: true, attributes: nil)
+        for platform in BaseBuild.platforms {
+            for arch in architectures(platform) {
+                // restore lib
+                let srcThinLibPath = directoryURL + ["lib"] + [platform.rawValue, "thin", arch.rawValue, "lib"]
+                let destThinPath = thinDir(platform: platform, arch: arch)
+                let destThinLibPath = destThinPath + ["lib"]
+                try? FileManager.default.createDirectory(atPath: destThinPath.path, withIntermediateDirectories: true, attributes: nil)
+                try? FileManager.default.copyItem(at: srcThinLibPath, to: destThinLibPath)
+
+                // restore include
+                let srcIncludePath = directoryURL + ["include"]
+                let destIncludePath = thinDir(platform: platform, arch: arch) + ["include"]
+                try? FileManager.default.copyItem(at: srcIncludePath, to: destIncludePath)
+
+                // restore pkgconfig
+                let srcPkgConfigPath = directoryURL + ["pkgconfig-example"]
+                let destPkgConfigPath = thinDir(platform: platform, arch: arch) + ["lib", "pkgconfig"]
+                try? FileManager.default.copyItem(at: srcPkgConfigPath, to: destPkgConfigPath)
+
+                // update pkgconfig prefix
+                Utility.listAllFiles(in: destPkgConfigPath).forEach { file in
+                    if let data = FileManager.default.contents(atPath: file.path), var str = String(data: data, encoding: .utf8) {
+                        str = str.replacingOccurrences(of: "/path/to/dist" , with: URL.currentDirectory.path)
+                        try! str.write(toFile: file.path, atomically: true, encoding: .utf8)
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 enum PlatformType: String, CaseIterable {
@@ -744,6 +799,12 @@ enum Utility {
     }
 
     @discardableResult
+    static func launch(executableName: String, arguments: [String], isOutput: Bool = false, currentDirectoryURL: URL? = nil, environment: [String: String] = [:]) throws -> String {
+        let executableURL = Utility.shell("which \(executableName)", isOutput: true)!
+        return try launch(executableURL: URL(fileURLWithPath: executableURL), arguments: arguments, isOutput: isOutput, currentDirectoryURL: currentDirectoryURL, environment: environment)
+    }
+
+    @discardableResult
     static func launch(executableURL: URL, arguments: [String], isOutput: Bool = false, currentDirectoryURL: URL? = nil, environment: [String: String] = [:]) throws -> String {
         #if os(macOS)
         let task = Process()
@@ -837,6 +898,29 @@ enum Utility {
         #else
         return ""
         #endif
+    }
+
+
+    @discardableResult
+    static func listAllFiles(in directory: URL) -> [URL] {
+        var allFiles: [URL] = []
+        let enumerator = FileManager.default.enumerator(atPath: directory.path)
+
+        while let file = enumerator?.nextObject() as? String {
+            let filePath = directory + [file]
+            var isDirectory: ObjCBool = false
+
+            if FileManager.default.fileExists(atPath: filePath.path, isDirectory: &isDirectory) {
+                if isDirectory.boolValue {
+                    // 如果是目录，则递归遍历该目录
+                    listAllFiles(in: filePath)
+                } else {
+                    allFiles.append(filePath)
+                }
+            }
+        }
+
+        return allFiles
     }
 }
 
