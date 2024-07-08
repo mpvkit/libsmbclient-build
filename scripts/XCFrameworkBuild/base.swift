@@ -48,7 +48,7 @@ class BaseBuild {
             try! Utility.launch(path: "/usr/bin/git", arguments: ["-c", "advice.detachedHead=false", "clone", "--depth", "1", "--branch", library.version, library.url, directoryURL.path])
 
             // apply patch
-            let patch = URL.currentDirectory + "../scripts/XCFrameworkBuild/patch/\(library.rawValue)"
+            let patch = URL.currentDirectory + "../scripts/patch/\(library.rawValue)"
             if FileManager.default.fileExists(atPath: patch.path) {
                 _ = try? Utility.launch(path: "/usr/bin/git", arguments: ["checkout", "."], currentDirectoryURL: directoryURL)
                 let fileNames = try! FileManager.default.contentsOfDirectory(atPath: patch.path).sorted()
