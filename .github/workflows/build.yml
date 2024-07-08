@@ -25,18 +25,18 @@ jobs:
         brew install texinfo
         python -m pip install setuptools
 
-    - name: list files
-      run: ls -al ./dist
-
     - name: Build
       run: |
         swift run --package-path scripts build enable-libsmbclient
-        
+
+    - name: list files
+      run: ls -al ./dist
+    
     - name: Update Package.swift
       run: |
         rm -f ./Package.swift
         cp -f ./docs/Package.template.swift ./Package.swift
-        
+
         Libsmbclient_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient.xcframework.zip"
         Libsmbclient_checksum=$(cat ./dist/release/Libsmbclient.xcframework.checksum.txt)
         sed -i '' "s#\\\(Libsmbclient_url)#${Libsmbclient_url}#g" ./Package.swift
