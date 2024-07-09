@@ -22,8 +22,12 @@ enum Library: String, CaseIterable {
             return "samba-4.15.13"
         case .readline:
             return "readline-8.2"
-        default:
-            return "unknown"
+        case .nettle:
+            return "3.8.3"
+        case .gmp:
+            return "3.8.3"
+        case .gnutls:
+            return "3.8.3"
         }
     }
 
@@ -34,11 +38,11 @@ enum Library: String, CaseIterable {
         case .readline:
             return "https://git.savannah.gnu.org/git/readline.git"
         case .nettle:
-            return "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/nettle-all.zip"
+            return "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/nettle-all.zip"
         case .gmp:
-            return "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/gmp-all.zip"
+            return "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gmp-all.zip"
         case .gnutls:
-            return "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/gnutls-all.zip"
+            return "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gnutls-all.zip"
         }
     }
 }
