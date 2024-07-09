@@ -134,17 +134,6 @@ private class BuildSmbclient: BaseBuild {
         ]
     }
 
-
-    override func buildALL() throws {
-        try super.buildALL()
-
-        // copy headers
-        let includeSourceDirectory = URL.currentDirectory + "../Sources/Libsmbclient.xcframework/ios-arm64/Libsmbclient.framework/Headers/samba-4.0"
-        let includeDestDirectory = URL.currentDirectory + "../Sources/smbclient/include"
-        print("Copy smbclient headers to path: \(includeDestDirectory.path)")
-        try? FileManager.default.removeItem(at: includeDestDirectory)
-        try? FileManager.default.copyItem(at: includeSourceDirectory, to: includeDestDirectory)
-    }
 }
 
 

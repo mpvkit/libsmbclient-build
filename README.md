@@ -12,8 +12,13 @@ https://github.com/mpvkit/libsmbclient-build.git
 
 ## How to build
 
-Only work on macOS 13+
-
 ```bash
 swift run --package-path scripts
+```
+
+or 
+
+```bash
+# deployment platform: macos,ios,tvos,maccatalyst
+swift run --package-path scripts build platforms=ios,macos
 ```

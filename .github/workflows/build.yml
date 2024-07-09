@@ -27,11 +27,8 @@ jobs:
 
     - name: Build
       run: |
-        swift run --package-path scripts build enable-libsmbclient
+        swift run --package-path scripts build enable-split-platform
 
-    - name: list files
-      run: ls -al ./dist
-    
     - name: Update Package.swift
       run: |
         rm -f ./Package.swift
@@ -41,6 +38,21 @@ jobs:
         Libsmbclient_checksum=$(cat ./dist/release/Libsmbclient.xcframework.checksum.txt)
         sed -i '' "s#\\\(Libsmbclient_url)#${Libsmbclient_url}#g" ./Package.swift
         sed -i '' "s#\\\(Libsmbclient_checksum)#${Libsmbclient_checksum}#g" ./Package.swift
+
+        Libsmbclient_ios_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient-ios.xcframework.zip"
+        Libsmbclient_ios_checksum=$(cat ./dist/release/Libsmbclient-ios.xcframework.checksum.txt)
+        sed -i '' "s#\\\(Libsmbclient_ios_url)#${Libsmbclient_ios_url}#g" ./Package.swift
+        sed -i '' "s#\\\(Libsmbclient_ios_checksum)#${Libsmbclient_ios_checksum}#g" ./Package.swift
+
+        Libsmbclient_tvos_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient-tvos.xcframework.zip"
+        Libsmbclient_tvos_checksum=$(cat ./dist/release/Libsmbclient-tvos.xcframework.checksum.txt)
+        sed -i '' "s#\\\(Libsmbclient_tvos_url)#${Libsmbclient_tvos_url}#g" ./Package.swift
+        sed -i '' "s#\\\(Libsmbclient_tvos_checksum)#${Libsmbclient_tvos_checksum}#g" ./Package.swift
+
+        Libsmbclient_macos_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient-macos.xcframework.zip"
+        Libsmbclient_macos_checksum=$(cat ./dist/release/Libsmbclient-macos.xcframework.checksum.txt)
+        sed -i '' "s#\\\(Libsmbclient_macos_url)#${Libsmbclient_macos_url}#g" ./Package.swift
+        sed -i '' "s#\\\(Libsmbclient_macos_checksum)#${Libsmbclient_macos_checksum}#g" ./Package.swift
 
     - name: Push Package.swift
       uses: EndBug/add-and-commit@v9
