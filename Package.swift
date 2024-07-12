@@ -30,22 +30,22 @@ let package = Package(
         .binaryTarget(
             name: "Libsmbclient",
             url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient.xcframework.zip",
-            checksum: "e4c0e0e206289ff0d22c896d9b323e7ce719120a4d1900e8f48c43843d280c7a"
+            checksum: "41432c74d776535c97a4605c2150cda8fc2fd69eb4b567755a252bd3ea78d53e"
         ),
         .binaryTarget(
             name: "Libsmbclient-ios",
             url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-ios.xcframework.zip",
-            checksum: "83b04fa841f5467307638514d4c9ce7d4c6ffcbfa897c01c7b4aca2f20bf0023"
+            checksum: "e8a9b481d07302dd52288d589d09634b3251f68dc812884f33745312f9c56530"
         ),
         .binaryTarget(
             name: "Libsmbclient-tvos",
             url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-tvos.xcframework.zip",
-            checksum: "4e8b3feb637fabeab3ce0192eb0bdee5848148371780aa13948715d88ae84a52"
+            checksum: "bf9e67a85510d7aac47d566282f59982ae1d92fefff61a8f442b6f21b49f21d1"
         ),
         .binaryTarget(
             name: "Libsmbclient_macos",
             url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-macos.xcframework.zip",
-            checksum: "f40d781c02c02783ace67578ab3d5fe25869891e29f98624d88e4dd0cee006a4"
+            checksum: "f0fe69ba45b56054fb3117bef467ded4c036a71e97424cff1b27057f7ce5ef1a"
         )
     ]
 )
