@@ -18,10 +18,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cpan Parse::Yapp
         brew install autoconf
         brew install automake
         brew install libtool
+        brew install meson
+        brew install ninja
+        cpan Parse::Yapp
         brew install texinfo
         python -m pip install setuptools
 
