@@ -23,28 +23,28 @@ let package = Package(
             targets: ["Libsmbclient-macos"]
         ),
     ],
-    dependencies: [
-        .package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
-    ],
     targets: [
         //DEPENDENCY_TARGETS_BEGIN//
 
         .binaryTarget(
-            name: "gmp",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/gmp.xcframework.zip",
-            checksum: "56335db8813453b8fc4fa856a8946619c1d250fb75956aec5a7747db6b391b06"
+            name: "Libsmbclient",
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient.xcframework.zip",
+            checksum: "a77ac8abdbb4d7ede1fd862338c7b5a0c8bc5d8d2d17c59672d6050afb810923"
         ),
-
         .binaryTarget(
-            name: "nettle",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/nettle.xcframework.zip",
-            checksum: "d67acef64dfaca72478d0b828d6b07263d684b1c5a37eb91a67f319619754c4c"
+            name: "Libsmbclient-ios",
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-ios.xcframework.zip",
+            checksum: "ee69d8c43826bf92203233489c99e1217a83336586d47c321287f43173107801"
         ),
-
         .binaryTarget(
-            name: "gnutls",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/gnutls.xcframework.zip",
-            checksum: "22793c592f174383f3afec21991a85ad6d7082d3784dee6e6d0fe3f78d2be45b"
+            name: "Libsmbclient-tvos",
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-tvos.xcframework.zip",
+            checksum: "e19b70479574a84dbc5238410ff063979eddae391e62673c9f949617bbc92cd1"
+        ),
+        .binaryTarget(
+            name: "Libsmbclient-macos",
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-macos.xcframework.zip",
+            checksum: "4ffe6d26dc8e0032007421d01d12c861a035c99401b2cdd9ed626f179c5d83a7"
         ),
         //DEPENDENCY_TARGETS_END//
     ]
