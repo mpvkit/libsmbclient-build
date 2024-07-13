@@ -135,7 +135,7 @@ private class BuildSmbclient: BaseBuild {
         var env = super.environment(platform: platform, arch: arch)
         let executableArchitecture = arch.executableArchitecture ?? "x86_64"
         let asn1DirectoryURL = URL.currentDirectory + ["../bin", executableArchitecture]
-        env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":" + (env["PATH"] ?? "")
+        env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":/Library/Frameworks/Python.framework/Versions/Current/bin:" + (env["PATH"] ?? "")
         env["PYTHONHASHSEED"] = "1"
         env["WAF_MAKE"] = "1"
         return env
