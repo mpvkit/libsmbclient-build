@@ -23,9 +23,6 @@ let package = Package(
             targets: ["Libsmbclient-macos"]
         ),
     ],
-    dependencies: [
-        .package(url: "https://github.com/mpvkit/gnutls-build.git", from: "3.8.3")
-    ],
     targets: [
         //DEPENDENCY_TARGETS_BEGIN//
         //DEPENDENCY_TARGETS_END//
