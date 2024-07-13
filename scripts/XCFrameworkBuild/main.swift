@@ -46,6 +46,62 @@ enum Library: String, CaseIterable {
             return "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gnutls-all.zip"
         }
     }
+
+
+    // for generate Package.swift
+    var targets : [PackageTarget] {
+        switch self {
+        case .libsmbclient:
+            return  [
+                .target(
+                    name: "Libsmbclient",
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient.xcframework.checksum.txt"
+                ),
+                .target(
+                    name: "Libsmbclient-ios",
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-ios.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-ios.xcframework.checksum.txt"
+                ),
+                .target(
+                    name: "Libsmbclient-tvos",
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-tvos.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-tvos.xcframework.checksum.txt"
+                ),
+                .target(
+                    name: "Libsmbclient-macos",
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
+                ),
+            ]
+        case .gnutls:
+            return  [
+                .target(
+                    name: "gnutls",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gnutls.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gnutls.xcframework.checksum.txt"
+                ),
+            ]
+        case .nettle:
+            return  [
+                .target(
+                    name: "nettle",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/nettle.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/nettle.xcframework.checksum.txt"
+                ),
+            ]
+        case .gmp:
+            return  [
+                .target(
+                    name: "gmp",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gmp.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gmp.xcframework.checksum.txt"
+                ),
+            ]
+        default:
+            return []
+        }
+    }
 }
 
 
@@ -79,7 +135,7 @@ private class BuildSmbclient: BaseBuild {
         var env = super.environment(platform: platform, arch: arch)
         let executableArchitecture = arch.executableArchitecture ?? "x86_64"
         let asn1DirectoryURL = URL.currentDirectory + ["../bin", executableArchitecture]
-        env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":/Library/Frameworks/Python.framework/Versions/Current/bin:" + (env["PATH"] ?? "")
+        env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":" + (env["PATH"] ?? "")
         env["PYTHONHASHSEED"] = "1"
         env["WAF_MAKE"] = "1"
         return env

@@ -12,7 +12,7 @@ jobs:
   build:
     permissions:
       contents: write
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v4
 
@@ -29,32 +29,12 @@ jobs:
 
     - name: Build
       run: |
-        make build enable-split-platform
+        make build enable-split-platform version=${{ github.event.inputs.version }}
 
     - name: Update Package.swift
       run: |
-        rm -f ./Package.swift
-        cp -f ./docs/Package.template.swift ./Package.swift
-
-        Libsmbclient_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient.xcframework.zip"
-        Libsmbclient_checksum=$(cat ./dist/release/Libsmbclient.xcframework.checksum.txt)
-        sed -i '' "s#\\\(Libsmbclient_url)#${Libsmbclient_url}#g" ./Package.swift
-        sed -i '' "s#\\\(Libsmbclient_checksum)#${Libsmbclient_checksum}#g" ./Package.swift
-
-        Libsmbclient_ios_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient-ios.xcframework.zip"
-        Libsmbclient_ios_checksum=$(cat ./dist/release/Libsmbclient-ios.xcframework.checksum.txt)
-        sed -i '' "s#\\\(Libsmbclient_ios_url)#${Libsmbclient_ios_url}#g" ./Package.swift
-        sed -i '' "s#\\\(Libsmbclient_ios_checksum)#${Libsmbclient_ios_checksum}#g" ./Package.swift
-
-        Libsmbclient_tvos_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient-tvos.xcframework.zip"
-        Libsmbclient_tvos_checksum=$(cat ./dist/release/Libsmbclient-tvos.xcframework.checksum.txt)
-        sed -i '' "s#\\\(Libsmbclient_tvos_url)#${Libsmbclient_tvos_url}#g" ./Package.swift
-        sed -i '' "s#\\\(Libsmbclient_tvos_checksum)#${Libsmbclient_tvos_checksum}#g" ./Package.swift
-
-        Libsmbclient_macos_url="https://github.com/mpvkit/libsmbclient-build/releases/download/${{ github.event.inputs.version }}/Libsmbclient-macos.xcframework.zip"
-        Libsmbclient_macos_checksum=$(cat ./dist/release/Libsmbclient-macos.xcframework.checksum.txt)
-        sed -i '' "s#\\\(Libsmbclient_macos_url)#${Libsmbclient_macos_url}#g" ./Package.swift
-        sed -i '' "s#\\\(Libsmbclient_macos_checksum)#${Libsmbclient_macos_checksum}#g" ./Package.swift
+        rm -rf ./Package.swift
+        cp -f ./dist/release/Package.swift ./Package.swift
 
     - name: Push Package.swift
       uses: EndBug/add-and-commit@v9
@@ -62,7 +42,6 @@ jobs:
         default_author: github_actions
         add: |
           - Package.swift
-          - Sources
         message: "chore: release version ${{ github.event.inputs.version }}"
         push: "origin HEAD:${{ github.ref_name }}"
         
