@@ -73,6 +73,11 @@ enum Library: String, CaseIterable {
                     url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.zip",
                     checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
                 ),
+                .target(
+                    name: "Libsmbclient-xros",
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-xros.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-xros.xcframework.checksum.txt"
+                ),
             ]
         case .gnutls:
             return  [

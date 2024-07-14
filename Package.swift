@@ -33,27 +33,27 @@ let package = Package(
         .target(
             name: "_Libsmbclient",
             dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient"],
-            path: "Sources/_Dummy"
+            path: "Sources/_Libsmbclient"
         ),
         .target(
             name: "_Libsmbclient-ios",
             dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-ios"],
-            path: "Sources/_Dummy"
+            path: "Sources/_Libsmbclient-ios"
         ),
         .target(
             name: "_Libsmbclient-tvos",
             dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-tvos"],
-            path: "Sources/_Dummy"
+            path: "Sources/_Libsmbclient-tvos"
         ),
         .target(
             name: "_Libsmbclient-macos",
             dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-macos"],
-            path: "Sources/_Dummy"
+            path: "Sources/_Libsmbclient-macos"
         ),
         .target(
             name: "_Libsmbclient-xros",
             dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-xros"],
-            path: "Sources/_Dummy"
+            path: "Sources/_Libsmbclient-xros"
         ),
         //AUTO_GENERATE_TARGETS_BEGIN//
 
@@ -99,6 +99,11 @@ let package = Package(
             name: "Libsmbclient-macos",
             url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-macos.xcframework.zip",
             checksum: "133ea6d00b2d43527c3ed8c6710f17fb1cc3908f9899285e6ec73ccaaee026e4"
+        ),
+        .binaryTarget(
+            name: "Libsmbclient-xros",
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-xros.xcframework.zip",
+            checksum: "c81a79b7773f8b22c40bda948c8e9a033dd124ee57b638963d1e1794f7128713"
         ),
         //AUTO_GENERATE_TARGETS_END//
     ]
