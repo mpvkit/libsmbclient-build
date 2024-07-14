@@ -74,6 +74,35 @@ enum Library: String, CaseIterable {
                     checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
                 ),
             ]
+        case .gnutls:
+            return  [
+                .target(
+                    name: "gnutls",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gnutls.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gnutls.xcframework.checksum.txt"
+                ),
+            ]
+        case .nettle:
+            return  [
+                .target(
+                    name: "nettle",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/nettle.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/nettle.xcframework.checksum.txt"
+                ),
+                .target(
+                    name: "hogweed",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/hogweed.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/hogweed.xcframework.checksum.txt"
+                ),
+            ]
+        case .gmp:
+            return  [
+                .target(
+                    name: "gmp",
+                    url: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gmp.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/gmp.xcframework.checksum.txt"
+                ),
+            ]
         default:
             return []
         }
@@ -109,8 +138,7 @@ private class BuildSmbclient: BaseBuild {
 
     override func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
         var env = super.environment(platform: platform, arch: arch)
-        let executableArchitecture = arch.executableArchitecture ?? "x86_64"
-        let asn1DirectoryURL = URL.currentDirectory + ["../bin", executableArchitecture]
+        let asn1DirectoryURL = URL.currentDirectory + ["../bin", arch.hostArchitecture]
         env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":" + (env["PATH"] ?? "")
         env["PATH"] = "/Library/Frameworks/Python.framework/Versions/Current/bin:" + (env["PATH"] ?? "") // GIT ACTION python path
         env["PYTHONHASHSEED"] = "1"

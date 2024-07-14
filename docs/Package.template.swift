@@ -8,23 +8,54 @@ let package = Package(
     products: [
         .library(
             name: "Libsmbclient",
-            targets: ["Libsmbclient"]
+            targets: ["_Libsmbclient"]
         ),
         .library(
             name: "Libsmbclient-ios",
-            targets: ["Libsmbclient-ios"]
+            targets: ["_Libsmbclient-ios"]
         ),
         .library(
             name: "Libsmbclient-tvos",
-            targets: ["Libsmbclient-tvos"]
+            targets: ["_Libsmbclient-tvos"]
         ),
         .library(
             name: "Libsmbclient-macos",
-            targets: ["Libsmbclient-macos"]
+            targets: ["_Libsmbclient-macos"]
+        ),
+        .library(
+            name: "Libsmbclient-xros",
+            targets: ["_Libsmbclient-xros"]
         ),
     ],
     targets: [
-        //DEPENDENCY_TARGETS_BEGIN//
-        //DEPENDENCY_TARGETS_END//
+        // Need a dummy target to embedded correctly.
+        // https://github.com/apple/swift-package-manager/issues/6069
+        .target(
+            name: "_Libsmbclient",
+            dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient"],
+            path: "Sources/_Dummy"
+        ),
+        .target(
+            name: "_Libsmbclient-ios",
+            dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-ios"],
+            path: "Sources/_Dummy"
+        ),
+        .target(
+            name: "_Libsmbclient-tvos",
+            dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-tvos"],
+            path: "Sources/_Dummy"
+        ),
+        .target(
+            name: "_Libsmbclient-macos",
+            dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-macos"],
+            path: "Sources/_Dummy"
+        ),
+        .target(
+            name: "_Libsmbclient-xros",
+            dependencies: ["gmp", "nettle", "hogweed", "gnutls", "Libsmbclient-xros"],
+            path: "Sources/_Dummy"
+        ),
+        //AUTO_GENERATE_TARGETS_BEGIN//
+        //AUTO_GENERATE_TARGETS_END//
     ]
 )
