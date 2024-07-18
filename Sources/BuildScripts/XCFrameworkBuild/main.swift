@@ -11,7 +11,7 @@ do {
     try BuildSmbclient().buildALL()
 } catch {
     print(error.localizedDescription)
-    exit(0)
+    exit(1)
 }
 
 
@@ -118,6 +118,12 @@ enum Library: String, CaseIterable {
 private class BuildSmbclient: BaseBuild {
 
     init() {
+        super.init(library: .libsmbclient)
+    }
+
+    override func beforeBuild() throws {
+        try super.beforeBuild()
+
         // // if use brew version python, you will need to install python-setuptools for distutils dependency error
         // if Utility.shell("brew list python-setuptools") == nil {
         //     Utility.shell("brew install python-setuptools")
@@ -127,8 +133,10 @@ private class BuildSmbclient: BaseBuild {
         if Utility.shell("python -m pip list|grep setuptools") == nil {
             Utility.shell("python -m pip install setuptools")
         }
+    }
 
-        super.init(library: .libsmbclient)
+    override func flagsDependencelibrarys() -> [Library] {
+        [.gmp, .nettle, .gnutls]
     }
 
     override func wafPath() -> String {
@@ -138,12 +146,29 @@ private class BuildSmbclient: BaseBuild {
     override func cFlags(platform: PlatformType, arch: ArchType) -> [String] {
         var cFlags = super.cFlags(platform: platform, arch: arch)
         cFlags.append("-Wno-error=implicit-function-declaration")
+        // cFlags.append("-malign-double")
+        // cFlags.append("-Werror=cast-align")
         return cFlags
+    }
+
+    override func ldFlags(platform: PlatformType, arch: ArchType) -> [String] {
+        var ldFlags = super.ldFlags(platform: platform, arch: arch)
+
+        var path = thinDir(library: .nettle, platform: platform, arch: arch)
+        if FileManager.default.fileExists(atPath: path.path) {
+            ldFlags.append("-lhogweed")
+        }
+        path = thinDir(library: .gnutls, platform: platform, arch: arch)
+        if FileManager.default.fileExists(atPath: path.path) {
+            ldFlags.append(contentsOf: ["-framework", "Security", "-framework", "CoreFoundation"])
+        }
+
+        return ldFlags
     }
 
     override func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
         var env = super.environment(platform: platform, arch: arch)
-        let asn1DirectoryURL = URL.currentDirectory + ["../bin", arch.hostArchitecture]
+        let asn1DirectoryURL = URL.currentDirectory + ["../bin", ArchType.hostArch.rawValue]
         env["PATH"] = asn1DirectoryURL.path + ":" + (directoryURL + "buildtools/bin").path + ":" + (env["PATH"] ?? "")
         env["PATH"] = "/Library/Frameworks/Python.framework/Versions/Current/bin:" + (env["PATH"] ?? "") // GIT ACTION python path
         env["PYTHONHASHSEED"] = "1"
@@ -165,7 +190,7 @@ private class BuildSmbclient: BaseBuild {
     }
 
     override func arguments(platform: PlatformType, arch: ArchType) -> [String] {
-        [
+        var options = [
             "--without-cluster-support",
             "--disable-rpath",
             "--without-ldap",
@@ -199,10 +224,18 @@ private class BuildSmbclient: BaseBuild {
             "--builtin-libraries=!smbclient,!smbd_base,!smbstatus,ALL",
             "--host=\(platform.host(arch: arch))",
             "--prefix=\(thinDir(platform: platform, arch: arch).path)",
-
-            "--cross-compile",
-            "--cross-answers=cross-answers.txt",
         ]
+
+        //macOS can detect, but other platforms need configured by cross-answers.txt
+        let crossawsersURL = URL.currentDirectory + "../Sources/BuildScripts/waf-cross-answers/\(arch.rawValue).txt"
+        if platform != .macos && arch != ArchType.hostArch {
+            options += [
+                "--cross-compile",
+                "--cross-answers=\(crossawsersURL.path)",
+            ]
+        }
+
+        return options
     }
 
 }
