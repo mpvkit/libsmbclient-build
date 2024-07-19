@@ -15,6 +15,22 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: |
+        brew install autoconf
+        brew install automake
+        brew install libtool
+        python -m pip install meson==1.4.2
+        brew install ninja
+        cpan Parse::Yapp
+        brew install texinfo
+        python -m pip install setuptools
+
+    - name: Setup Xcode to support visionOS
+      run: |
+        sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+        xcodebuild -showsdks
+
     - name: Check version to release
       uses: jannekem/run-python-script-action@v1
       with:
@@ -32,28 +48,12 @@ jobs:
           file_path = './Sources/BuildScripts/XCFrameworkBuild/main.swift'
           with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
-          compileVersion = re.search(r'(case .libsmbclient[^"]+?)"(.+?)"', content).group(2)
-          print(f'compile version: {compileVersion}')
-          releaseVersion = '${{ env.RELEASE_VERSION }}' or normalize_version(compileVersion)
+          buildVersion = re.search(r'(case .libsmbclient[^"]+?)"(.+?)"', content).group(2)
+          print(f'build version: {buildVersion}')
+          releaseVersion = '${{ env.RELEASE_VERSION }}' or normalize_version(buildVersion)
           print(f'release version: {releaseVersion}')
-          set_env('COMPILE_VERSION', compileVersion)
+          set_env('BUILD_VERSION', buildVersion)
           set_env('RELEASE_VERSION', releaseVersion)
-
-    - name: Install dependencies
-      run: |
-        brew install autoconf
-        brew install automake
-        brew install libtool
-        brew install meson
-        brew install ninja
-        cpan Parse::Yapp
-        brew install texinfo
-        python -m pip install setuptools
-
-    - name: Setup Xcode to support visionOS
-      run: |
-        sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
-        xcodebuild -showsdks
 
     - name: Build
       run: |
@@ -70,13 +70,13 @@ jobs:
         default_author: github_actions
         add: |
           - Package.swift
-        message: "chore: bump version to ${{ env.COMPILE_VERSION }}"
+        message: "chore: bump version to ${{ env.BUILD_VERSION }}"
         push: "origin HEAD:${{ github.ref_name }}"
         
     - name: Upload binary to GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        name: ${{ env.COMPILE_VERSION }}
+        name: ${{ env.BUILD_VERSION }}
         tag_name: ${{ env.RELEASE_VERSION }}
         files: |
           ./dist/release/*.txt
