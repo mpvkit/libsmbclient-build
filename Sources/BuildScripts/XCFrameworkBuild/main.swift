@@ -20,9 +20,9 @@ enum Library: String, CaseIterable {
     var version: String {
         switch self {
         case .libsmbclient:
-            return "samba-4.18.11"
+            return "samba-4.15.13"
         case .readline:
-            return "readline-8.2"
+            return "8.2.0"
         case .nettle:
             return "3.8.6"
         case .gmp:
@@ -37,7 +37,7 @@ enum Library: String, CaseIterable {
         case .libsmbclient:
             return "https://github.com/samba-team/samba"
         case .readline:
-            return "https://git.savannah.gnu.org/git/readline.git"
+            return "https://github.com/mpvkit/readline-build/releases/download/\(self.version)/readline-all.zip"
         case .nettle:
             return "https://github.com/mpvkit/gnutls-build/releases/download/\(self.version)/nettle-all.zip"
         case .gmp:
@@ -241,7 +241,7 @@ private class BuildSmbclient: BaseBuild {
 }
 
 
-private class BuildReadline: BaseBuild {
+private class BuildReadline: ZipBaseBuild {
     init() {
         super.init(library: .readline)
     }
@@ -249,15 +249,6 @@ private class BuildReadline: BaseBuild {
     // readline 只是在编译的时候需要用到。外面不需要用到
     override func frameworks() throws -> [String] {
         []
-    }
-
-    override func arguments(platform: PlatformType, arch: ArchType) -> [String] {
-        [
-            "--enable-static",
-            "--disable-shared",
-            "--host=\(platform.host(arch: arch))",
-            "--prefix=\(thinDir(platform: platform, arch: arch).path)",
-        ]
     }
 }
 
