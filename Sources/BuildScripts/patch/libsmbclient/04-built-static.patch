@@ -37,8 +37,8 @@
 +Requires.private: @REQUIRES_PRIVATE@
  Cflags: -I${includedir}
  URL: http://www.samba.org/
---- a/source4/heimdal/lib/hcrypto/camellia-ntt.h
-+++ b/source4/heimdal/lib/hcrypto/camellia-ntt.h
+--- a/third_party/heimdal/lib/hcrypto/camellia-ntt.h
++++ b/third_party/heimdal/lib/hcrypto/camellia-ntt.h
 @@ -35,6 +35,10 @@
  
  typedef u32 KEY_TABLE_TYPE[CAMELLIA_TABLE_WORD_LEN];
