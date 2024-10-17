@@ -20,7 +20,7 @@ enum Library: String, CaseIterable {
     var version: String {
         switch self {
         case .libsmbclient:
-            return "samba-4.15.13"
+            return "samba-4.15.6"
         case .readline:
             return "8.2.0"
         case .nettle:
