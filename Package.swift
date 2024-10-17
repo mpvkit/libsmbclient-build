@@ -59,51 +59,51 @@ let package = Package(
 
         .binaryTarget(
             name: "gmp",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/gmp.xcframework.zip",
-            checksum: "defd5623e6786543588001b8f33026395960a561540738deb6df6996d39f957d"
+            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.6/gmp.xcframework.zip",
+            checksum: "3778324f9f0eb3612eff3cf40184b99c13ba59c9715d5b1cb1b4fed2a6e9d986"
         ),
 
         .binaryTarget(
             name: "nettle",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/nettle.xcframework.zip",
-            checksum: "c3b8f506fa32bcb3f9bf65096b0556c4f5973f846ee964577d783edbe8e6969d"
+            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.6/nettle.xcframework.zip",
+            checksum: "5896222340532fe813f889baa33fe36e701ea7bf771c3bb4b2a8c92609718d0b"
         ),
         .binaryTarget(
             name: "hogweed",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/hogweed.xcframework.zip",
-            checksum: "47a34e7877f7ebd9175f5645059030e553276faa9a21b91e29fb7463b94e8daf"
+            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.6/hogweed.xcframework.zip",
+            checksum: "1803b8d70321419026b357ea1a32c208808cc5deea5f2a2fbb1caaff53b72ef3"
         ),
 
         .binaryTarget(
             name: "gnutls",
-            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.3/gnutls.xcframework.zip",
-            checksum: "5f5cf903a2d52157c29ad304260709f618ce086afea02061241982f8425a6fb0"
+            url: "https://github.com/mpvkit/gnutls-build/releases/download/3.8.6/gnutls.xcframework.zip",
+            checksum: "1a09c17f4c7ff96d74062def690ff5ed21f9e28f0f096d1c4d1427247fbc76e8"
         ),
 
         .binaryTarget(
             name: "Libsmbclient",
-            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient.xcframework.zip",
-            checksum: "589db9c241e6cc274f2825bee542add273febd0666ebd7ea8a402574ed76e9af"
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.6/Libsmbclient.xcframework.zip",
+            checksum: "842dfe8e75696c233278ca163ccb08a5327d3cf37f286bc4c01eedfc26a5a984"
         ),
         .binaryTarget(
             name: "Libsmbclient-ios",
-            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-ios.xcframework.zip",
-            checksum: "321b5bb0d1f58479ae668a88f9200dc7b50c48a3382fe070117e480f2c98dec2"
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.6/Libsmbclient-ios.xcframework.zip",
+            checksum: "4a0ebf1a79a127b3143e0a9b9742555c9dae6866cffeb5a0c8238dcbc926e699"
         ),
         .binaryTarget(
             name: "Libsmbclient-tvos",
-            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-tvos.xcframework.zip",
-            checksum: "1c4ec61bf500cb46efdb11cbe206ab2e139ddc7d117493a084357c5aa2219961"
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.6/Libsmbclient-tvos.xcframework.zip",
+            checksum: "0349ff665e79dd7f610b7b084877a3e3c1ee085475549b71089cb32580531105"
         ),
         .binaryTarget(
             name: "Libsmbclient-macos",
-            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-macos.xcframework.zip",
-            checksum: "fcbb992ae2acc5bbfaca4b23d2c0b36d67d7beeff4e8c2a6561a4fd1f5858295"
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.6/Libsmbclient-macos.xcframework.zip",
+            checksum: "173f72e104ab5af2ea592dd5f30e711147dd8e9f172fa3907ebc2a4be0f21b4a"
         ),
         .binaryTarget(
             name: "Libsmbclient-xros",
-            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.13/Libsmbclient-xros.xcframework.zip",
-            checksum: "f47af7935580a5b256fa57ce41cea83a5aab9196bd3d707546aba39fc799fe41"
+            url: "https://github.com/mpvkit/libsmbclient-build/releases/download/4.15.6/Libsmbclient-xros.xcframework.zip",
+            checksum: "5496f971070b4deb0275cd902aa9e14153cc83ff156bec4f5cbf71b783f78b01"
         ),
         //AUTO_GENERATE_TARGETS_END//
     ]
