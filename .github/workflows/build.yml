@@ -81,5 +81,3 @@ jobs:
         fail_on_unmatched_files: true
         body: |
           https://github.com/samba-team/samba/blob/${{ env.BUILD_VERSION }}/WHATSNEW.txt
-
-          ![download](https://img.shields.io/github/downloads/${{ github.repository }}/${{ env.RELEASE_VERSION }}/total?label=Downloads)

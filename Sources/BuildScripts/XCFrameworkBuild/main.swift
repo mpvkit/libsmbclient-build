@@ -22,13 +22,13 @@ enum Library: String, CaseIterable {
         case .libsmbclient:
             return "samba-4.15.13"
         case .readline:
-            return "8.2.0-xcode"
+            return "8.3.0"
         case .nettle:
-            return "3.8.8-xcode"
+            return "3.8.11"
         case .gmp:
-            return "3.8.8-xcode"
+            return "3.8.11"
         case .gnutls:
-            return "3.8.8-xcode"
+            return "3.8.11"
         }
     }
 
