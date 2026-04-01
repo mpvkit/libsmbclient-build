@@ -28,7 +28,7 @@ let package = Package(
         ),
     ],
     targets: [
-        // Need a dummy target to embedded correctly.
+        // Need dummy targets to embed correctly.
         // https://github.com/apple/swift-package-manager/issues/6069
         .target(
             name: "_Libsmbclient",

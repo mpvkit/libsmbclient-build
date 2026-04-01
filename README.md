@@ -6,6 +6,8 @@
 
 build scripts for [libsmbclient](https://github.com/samba-team/samba)
 
+> This is a component of the [MPVKit](https://github.com/mpvkit/MPVKit) project.
+
 ## Installation
 
 ### Swift Package Manager
