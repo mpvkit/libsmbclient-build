@@ -50,33 +50,34 @@ enum Library: String, CaseIterable, BuildLibrary {
 
     // for generate Package.swift
     var targets : [PackageTarget] {
+        let releaseVersion = BuildRunner.options?.releaseVersion ?? "0.0.0"
         switch self {
         case .libsmbclient:
             return  [
                 .target(
                     name: "Libsmbclient",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-ios",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-ios.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-ios.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-ios.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-ios.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-tvos",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-tvos.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-tvos.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-tvos.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-tvos.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-macos",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-macos.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-macos.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-xros",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-xros.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BuildRunner.options!.releaseVersion)/Libsmbclient-xros.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-xros.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-xros.xcframework.checksum.txt"
                 ),
             ]
         case .gnutls:
