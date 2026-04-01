@@ -1,21 +1,21 @@
 import Foundation
+import BuildShared
 
 do {
-    let options = try ArgumentOptions.parse(CommandLine.arguments)
-    try Build.performCommand(options)
+    let options = try BuildRunner.performCommand()
 
-    try BuildReadline().buildALL()
-    try BuildGmp().buildALL()
-    try BuildNettle().buildALL()
-    try BuildGnutls().buildALL()
-    try BuildSmbclient().buildALL()
+    try BuildReadline(options: options).buildALL()
+    try BuildGmp(options: options).buildALL()
+    try BuildNettle(options: options).buildALL()
+    try BuildGnutls(options: options).buildALL()
+    try BuildSmbclient(options: options).buildALL()
 } catch {
     print(error.localizedDescription)
     exit(1)
 }
 
 
-enum Library: String, CaseIterable {
+enum Library: String, CaseIterable, BuildLibrary {
     case libsmbclient, readline, gnutls, gmp, nettle
     var version: String {
         switch self {
@@ -50,33 +50,34 @@ enum Library: String, CaseIterable {
 
     // for generate Package.swift
     var targets : [PackageTarget] {
+        let releaseVersion = BuildRunner.options?.releaseVersion ?? "0.0.0"
         switch self {
         case .libsmbclient:
             return  [
                 .target(
                     name: "Libsmbclient",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-ios",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-ios.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-ios.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-ios.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-ios.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-tvos",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-tvos.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-tvos.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-tvos.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-tvos.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-macos",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-macos.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-macos.xcframework.checksum.txt"
                 ),
                 .target(
                     name: "Libsmbclient-xros",
-                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-xros.xcframework.zip",
-                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(BaseBuild.options.releaseVersion)/Libsmbclient-xros.xcframework.checksum.txt"
+                    url: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-xros.xcframework.zip",
+                    checksum: "https://github.com/mpvkit/libsmbclient-build/releases/download/\(releaseVersion)/Libsmbclient-xros.xcframework.checksum.txt"
                 ),
             ]
         case .gnutls:
@@ -117,8 +118,8 @@ enum Library: String, CaseIterable {
 
 private class BuildSmbclient: BaseBuild {
 
-    init() {
-        super.init(library: .libsmbclient)
+    init(options: ArgumentOptions) {
+        super.init(library: Library.libsmbclient, options: options)
     }
 
     override func beforeBuild() throws {
@@ -135,7 +136,7 @@ private class BuildSmbclient: BaseBuild {
         }
     }
 
-    override func flagsDependencelibrarys() -> [Library] {
+    override func flagsDependencelibrarys() -> [any BuildLibrary] {
         [.gmp, .nettle, .gnutls]
     }
 
@@ -242,8 +243,8 @@ private class BuildSmbclient: BaseBuild {
 
 
 private class BuildReadline: ZipBaseBuild {
-    init() {
-        super.init(library: .readline)
+    init(options: ArgumentOptions) {
+        super.init(library: Library.readline, options: options)
     }
 
     // readline 只是在编译的时候需要用到。外面不需要用到
@@ -253,19 +254,19 @@ private class BuildReadline: ZipBaseBuild {
 }
 
 private class BuildGmp: ZipBaseBuild {
-    init() {
-        super.init(library: .gmp)
+    init(options: ArgumentOptions) {
+        super.init(library: Library.gmp, options: options)
     }
 }
 
 private class BuildNettle: ZipBaseBuild {
-    init() {
-        super.init(library: .nettle)
+    init(options: ArgumentOptions) {
+        super.init(library: Library.nettle, options: options)
     }
 }
 
 private class BuildGnutls: ZipBaseBuild {
-    init() {
-        super.init(library: .gnutls)
+    init(options: ArgumentOptions) {
+        super.init(library: Library.gnutls, options: options)
     }
 }
