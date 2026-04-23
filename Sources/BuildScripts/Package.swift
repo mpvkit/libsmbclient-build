@@ -15,8 +15,7 @@ let package = Package(
         .executableTarget(
             name: "build",
             dependencies: ["BuildShared"],
-            path: "XCFrameworkBuild",
-            exclude: ["base.swift"]
+            path: "XCFrameworkBuild"
         )
     ]
 )
